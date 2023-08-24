@@ -7,35 +7,45 @@ import TableHeader from './TableHeader';
 import AddButton from './AddButton';
 import TableRow from './TableRow';
 import { useState } from 'react';
+import axios from 'axios';
 
-let globalId = 5;
+// let globalId = 5;
 
 export default function InvoiceTable({ initialInvoiceList }) {
 
     const [currentList, setCurrentList] = useState(initialInvoiceList)
 
-    const addRow = () => {
+    const addRow = async () => {
+        let { data } = await axios.post('/addInvoice', { description: "Description goes here", })
+
+        setCurrentList([...currentList, data])
         // get a copy of the current list 
         // create new "blank" object for new row
-        // push new object into my copied list 
+        // push new object into my copied list
         // update list state with the new version of the list
-        const newInvoiceList = [...currentList]
-        const newRow = {
-            id: globalId,
-            description: "Description",
-            rate: "",
-            hours: "",
-        }
-        newInvoiceList.push(newRow)
-        setCurrentList(newInvoiceList)
-        globalId++
+        // const newInvoiceList = [...currentList]
+        // const newRow = {
+        //     id: globalId,
+        //     description: "Description",
+        //     rate: "",
+        //     hours: "",
+        // }
+        // newInvoiceList.push(newRow)
+        // setCurrentList(newInvoiceList)
+        // globalId++
     }
 
-    const deleteRow = (id) => {
+    const deleteRow = async (id) => {
 
-        const filteredList = currentList.filter(element => element.id !== id)
+        const { data } = await axios.delete(`/removeInvoice/${id}`)
 
-        setCurrentList(filteredList)
+        if (!data.error) {
+            const filteredList = currentList.filter(element => element.id !== id)
+            setCurrentList(filteredList)
+        }
+
+        // const filteredList = currentList.filter(element => element.id !== id)
+        // setCurrentList(filteredList)
     }
     // console.log(initialInvoiceList)
     // const rows = initialInvoiceList.map((invoiceItem) => {
@@ -45,6 +55,7 @@ export default function InvoiceTable({ initialInvoiceList }) {
         return (
             <TableRow
                 key={id}
+                id={id}
                 initialInvoiceData={{ description: description, rate: rate, hours: hours }}
                 initialIsEditing={false}
                 deleteFunc={() => deleteRow(id)}

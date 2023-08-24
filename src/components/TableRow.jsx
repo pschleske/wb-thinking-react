@@ -4,9 +4,10 @@ import Hours from './Hours';
 import Rate from './Rate';
 import formatCurrency from '../utils/formatCurrency';
 import { useState } from 'react';
+import axios from 'axios';
 
 
-export default function TableRow({ initialInvoiceData, initialIsEditing, deleteFunc }) {
+export default function TableRow({ initialInvoiceData, initialIsEditing, deleteFunc, id }) {
     // const { description, rate, hours } = initialInvoiceData
 
     const [editMode, setEditMode] = useState(initialIsEditing)
@@ -16,7 +17,26 @@ export default function TableRow({ initialInvoiceData, initialIsEditing, deleteF
 
     const changeEditMode = () => setEditMode(true)
 
-    const changeNormalMode = () => setEditMode(false)
+    // const changeNormalMode = () => setEditMode(false)
+    const changeNormalMode = async () => {
+
+        let bodyObj = {
+            description,
+            rate,
+            hours
+        }
+        const { data } = await axios.put(`/editInvoice/${id}`, bodyObj)
+
+        if (!data.error) {
+            // setDescription(data.description)
+            // setRate(data.rate)
+            // setHours(data.hours)
+            setEditMode(false)
+        } else {
+            alert('Something went wrong, try again!')
+        }
+        // setEditMode(false)
+    }
 
     return (
         <tr>
