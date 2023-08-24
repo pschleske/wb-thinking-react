@@ -1,15 +1,15 @@
 import React from 'react'
 
-export default function ModeButtons({ isEditing }) {
+export default function ModeButtons({ isEditing, editClick, saveClick, deleteClick }) {
 
     return isEditing ? (
         <td>
-            <button>Save</button>
+            <button onClick={saveClick}>Save</button>
         </td>
     ) : (
         <td>
-            <button>Delete</button>
-            <button>Edit</button>
+            <button onClick={deleteClick}>Delete</button>
+            <button onClick={editClick}>Edit</button>
         </td>
     )
 }
